@@ -1,0 +1,23 @@
+chat:
+  id: test1
+  port: 7777
+
+spring:
+  application:
+    name: chat-service
+  datasource:
+    url: jdbc:mysql://8.141.151.176:3306/user?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: test
+    password: haihaihai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  redis:
+    host: 8.141.151.176
+    password: haihaihai
+
+  rabbitmq:
+    host: 8.141.151.176
+    port: 5672
+    virtual-host: /
+    username: admin
+    password: haihaihai
