@@ -1,4 +1,4 @@
-package qiao.chat.handler;
+package qiao.chat.server.handler;
 
 import com.alibaba.fastjson.JSON;
 import io.netty.channel.ChannelHandlerContext;
@@ -7,7 +7,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import qiao.chat.exception.BadRequest;
 import qiao.chat.pojo.request.Request;
 import qiao.chat.pojo.response.Response;
-import qiao.chat.util.RequestTypes;
+import qiao.chat.util.RequestType;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -51,7 +51,7 @@ public class TextWebSocketFrameCodec extends MessageToMessageCodec<TextWebSocket
                 throw new BadRequest("请求格式错误", e);
             }
 
-            cls = RequestTypes.getClassByType(type);
+            cls = RequestType.getRequestClass(type);
         }else{
             throw new BadRequest("请求格式错误");
         }

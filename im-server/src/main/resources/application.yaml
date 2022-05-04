@@ -6,7 +6,7 @@ spring:
   application:
     name: chat-service
   datasource:
-    url: jdbc:mysql://8.141.151.176:3306/user?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://8.141.151.176:3306/chat?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: test
     password: haihaihai
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -21,3 +21,11 @@ spring:
     virtual-host: /
     username: admin
     password: haihaihai
+
+mybatis:
+  typeAliasesPackage: qiao.chat.pojo.message
+  type-handlers-package: qiao.chat.dao
+  mapperLocations:
+    - classpath:mapper/**.xml
+  configuration:
+    mapUnderscoreToCamelCase: true

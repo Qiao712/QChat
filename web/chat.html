@@ -92,7 +92,10 @@
             let messageRequest = {
                 requestType: 1,
                 receiverId: receiver,
-                message: message
+                messageType: 1,
+                messageBody: {
+                    content: message
+                }
             }
             socket.send(JSON.stringify(messageRequest))
             textArea.value = textArea.value + "[我]" + message + "\n"

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import qiao.chat.constant.ProtocolConstant;
-import qiao.chat.pojo.request.MessageRequest;
+import qiao.chat.pojo.message.Message;
 import qiao.chat.pojo.response.MessageResponse;
 import qiao.chat.util.ConnectionManager;
 
@@ -34,27 +34,27 @@ public class MQMessageRoute implements MessageRoute, InitializingBean {
     private ConnectionManager connectionManager;
 
     @Override
-    public void transferMessageRequest(MessageRequest messageRequest) {
-        String serverId = redisTemplate.opsForValue().get("user:" + messageRequest.getReceiverId());
+    public void transferMessage(Message message) {
+        String serverId = redisTemplate.opsForValue().get("user:" + message.getReceiverId());
         if(serverId != null){
             //根据serverAddress进行转发
-            amqpTemplate.convertAndSend(ProtocolConstant.MESSAGE_EXCHANGE, "chat." + serverId, JSON.toJSONBytes(messageRequest));
+            amqpTemplate.convertAndSend(ProtocolConstant.MESSAGE_EXCHANGE, "chat." + serverId, JSON.toJSONBytes(message));
         }
     }
 
     @Override
-    public void receiveMessage(MessageRequest messageRequest){
+    public void receiveMessage(Message message){
         //推送消息至接收者客户端
         MessageResponse messageResponse = new MessageResponse();
         messageResponse.setMessageId(UUID.randomUUID().toString());
         messageResponse.setSenderId(messageResponse.getSenderId());
-        messageResponse.setContent(messageRequest.getMessage());
+        messageResponse.setMessageBody(message.getMessageBody());
 
-        Channel receiverChannel = connectionManager.getChannelByUserId(messageRequest.getReceiverId());
+        Channel receiverChannel = connectionManager.getChannelByUserId(message.getReceiverId());
         if(receiverChannel != null){
             receiverChannel.writeAndFlush(messageResponse);
         }else{
-            System.out.println(messageRequest.getReceiverId() + "目标不在线");
+            System.out.println(message.getReceiverId() + "目标不在线");
         }
     }
 
@@ -76,8 +76,8 @@ public class MQMessageRoute implements MessageRoute, InitializingBean {
         container.setConcurrentConsumers(6);    //设置线程数
         container.addQueueNames("chat."+imServerId);
         container.setMessageListener(message -> {
-            MessageRequest messageRequest = JSON.parseObject(message.getBody(), MessageRequest.class);
-            receiveMessage(messageRequest);
+            Message chatMessage = JSON.parseObject(message.getBody(), Message.class);
+            receiveMessage(chatMessage);
         });
 
         container.start();
@@ -85,6 +85,6 @@ public class MQMessageRoute implements MessageRoute, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        setMessageListener();
+//        setMessageListener();
     }
 }

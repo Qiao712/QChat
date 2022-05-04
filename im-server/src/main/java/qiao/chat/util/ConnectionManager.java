@@ -14,13 +14,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class ConnectionManager {
-    Map<String, Channel> userChannelMap = new ConcurrentHashMap<>();
-    Map<Channel, String> channelUserMap = new ConcurrentHashMap<>();
-
     @Autowired
-    StringRedisTemplate redisTemplate;
+    private StringRedisTemplate redisTemplate;
     @Value("${chat.id}")
     private String imServerId;
+
+    Map<String, Channel> userChannelMap = new ConcurrentHashMap<>();
+    Map<Channel, String> channelUserMap = new ConcurrentHashMap<>();
 
     /**
      * 通过用户id获取连接

@@ -12,10 +12,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import qiao.chat.handler.AuthRequestHandler;
-import qiao.chat.handler.ConnectStatusHandler;
-import qiao.chat.handler.MessageRequestHandler;
-import qiao.chat.handler.TextWebSocketFrameCodec;
+import qiao.chat.server.handler.*;
 
 @Component
 public class IMServer implements InitializingBean{
@@ -24,11 +21,13 @@ public class IMServer implements InitializingBean{
     private String websocketPath = "/ws";
 
     @Autowired
-    AuthRequestHandler authRequestHandler;
+    private AuthRequestHandler authRequestHandler;
     @Autowired
-    MessageRequestHandler messageRequestHandler;
+    private MessageRequestHandler messageRequestHandler;
     @Autowired
-    ConnectStatusHandler connectStatusHandler;
+    private ConnectStatusHandler connectStatusHandler;
+    @Autowired
+    private ConnectionContextHandler connectionContextHandler;
 
     public void start() throws InterruptedException {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -51,6 +50,7 @@ public class IMServer implements InitializingBean{
 
                         channelPipeline.addLast(connectStatusHandler);
                         channelPipeline.addLast(authRequestHandler);
+                        channelPipeline.addLast(connectionContextHandler);
                         channelPipeline.addLast(messageRequestHandler);
                     }
                 });

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="qiao.chat.dao.MessageMapper">
+    <select id="getMessageById" resultType="qiao.chat.pojo.message.Message">
+        SELECT id, receiver_id, sender_id, type, message_body, send_time, acknowledged
+        FROM message
+        WHERE id = #{id}
+    </select>
+
+    <insert id="saveMessage" parameterType="qiao.chat.pojo.message.Message">
+        <selectKey keyProperty="id" resultType="string" order="BEFORE">
+            select replace(uuid(), '-', '') as id
+        </selectKey>
+
+        INSERT INTO message(id, receiver_id, sender_id, type, message_body, acknowledged)
+        VALUES(#{id}, #{receiverId}, #{senderId}, #{type}, #{messageBody}, #{acknowledged})
+    </insert>
+</mapper>

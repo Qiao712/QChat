@@ -1,4 +1,4 @@
-package qiao.chat.handler;
+package qiao.chat.server.handler;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
