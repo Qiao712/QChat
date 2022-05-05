@@ -1,6 +1,5 @@
 package qiao.chat.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +11,7 @@ import qiao.chat.pojo.request.MessageRequest;
 import qiao.chat.pojo.response.MessageResponse;
 import qiao.chat.route.MessageRoute;
 import qiao.chat.service.MessageService;
+import qiao.chat.service.UserService;
 import qiao.chat.util.ConnectionContext;
 import qiao.chat.util.ConnectionManager;
 
@@ -25,6 +25,8 @@ public class MessageServiceImpl implements MessageService {
     MessageRoute messageRoute;
     @Autowired
     ConnectionManager connectionManager;
+    @Autowired
+    UserService userService;
 
     @Override
     public void pushMessageToUser(MessageRequest messageRequest) {
@@ -35,6 +37,9 @@ public class MessageServiceImpl implements MessageService {
         }
         if(messageRequest.getReceiverId() == null){
             throw new BadRequest("接收者为null");
+        }
+        if(! userService.existsUserById(messageRequest.getReceiverId())){
+            throw new BadRequest("接收者不存在");
         }
 
         //MessageRequest -> Message

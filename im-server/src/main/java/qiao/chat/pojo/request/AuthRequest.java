@@ -6,5 +6,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AuthRequest extends Request {
-    private String token;
+    private String username;
+    private String password;
 }

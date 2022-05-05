@@ -23,7 +23,7 @@ spring:
     password: haihaihai
 
 mybatis:
-  typeAliasesPackage: qiao.chat.pojo.message
+  typeAliasesPackage: qiao.chat.pojo.message;qiao.chat.pojo
   type-handlers-package: qiao.chat.dao
   mapperLocations:
     - classpath:mapper/**.xml
